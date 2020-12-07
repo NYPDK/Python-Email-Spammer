@@ -1,5 +1,6 @@
 # Python Email Spammer
 A simple email spammer made in python
+
 Can also be used to spam texts (if the phone number is formatted as an email).
 
 Here is a website that will let you do format most carriers as an email: https://freecarrierlookup.com/

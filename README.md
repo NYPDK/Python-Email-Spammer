@@ -7,3 +7,5 @@ A simple email spammer made in python
 ![Alt text](https://i.ibb.co/crMBgwC/image.png?raw=true "Title")
 3. run the program and follow the prompts
 ![Alt text](https://i.ibb.co/Ssxjddr/image.png?raw=true "Title")
+
+# Keep in mind, one Gmail account is limited to 2000 emails a day

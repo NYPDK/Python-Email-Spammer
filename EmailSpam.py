@@ -14,23 +14,27 @@ count = int(input('How many times would you like the process to repeat? (numbers
 context = ssl.create_default_context()
 
 try:
-    sep_mails = emails.split(' ')
-    sep_pass = passwords.split(' ')
+    try:
+        sep_mails = emails.split(' ')
+        sep_pass = passwords.split(' ')
 
-    for x in range(count):
-        sent = x + 1
-        for y in range(len(sep_mails)):
+        for x in range(count):
+            sent = x + 1
+            for y in range(len(sep_mails)):
+                with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
+                    server.login(sep_mails[y], sep_pass[y])
+                    server.sendmail(sep_mails[y], receiver_email, message)
+            print(f'{sent}/{count} cycles complete!')
+
+    except:
+        for x in range(count):
+            sent = x + 1
             with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
-                server.login(sep_mails[y], sep_pass[y])
-                server.sendmail(sep_mails[y], receiver_email, message)
-        print(f'{sent}/{count} cycles complete!')
-
-except:
-    for x in range(count):
-        sent = x + 1
-        with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
-            server.login(emails, passwords)
-            server.sendmail(emails, receiver_email, message)
-        print(f'{sent}/{count} cycles complete!')
+                server.login(emails, passwords)
+                server.sendmail(emails, receiver_email, message)
+            print(f'{sent}/{count} cycles complete!')
+            
+except Exception as err:
+    print(err)
 
 input('\nPress enter to close the application!')

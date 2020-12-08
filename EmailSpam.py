@@ -2,7 +2,7 @@ import smtplib, ssl, time
 
 print('\nTo use this to spam texts go here and format the persons number as an email (only works for top cellular carriers)\nhttps://freecarrierlookup.com/\n\nIt is also recommended that you use an alt gmail\n')
 
-port = 465  # For SSL
+port = 465 
 smtp_server = 'smtp.gmail.com'
 
 emails = input('Enter gmail accounts you wish to use as spammers seperated by spaces (one or more needed): ')
@@ -14,26 +14,20 @@ count = int(input('How many times would you like the process to repeat? (numbers
 context = ssl.create_default_context()
 
 try:
-    try:
-        sep_mails = emails.split(' ')
-        sep_pass = passwords.split(' ')
+    sep_mails = emails.split(' ')
+    sep_pass = passwords.split(' ')
+    print(f'\nUsing email(s): {sep_mails}')
 
-        for x in range(count):
-            sent = x + 1
-            for y in range(len(sep_mails)):
-                with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
-                    server.login(sep_mails[y], sep_pass[y])
-                    server.sendmail(sep_mails[y], receiver_email, message)
-            print(f'{sent}/{count} cycles complete!')
+    for x in range(count):
+        sent = x + 1
+        for y in range(len(sep_mails)):
+            with smtplib.SMTP_SSL(smtp_server, port, context = context) as server:
+                server.login(sep_mails[y], sep_pass[y])
+                server.sendmail(sep_mails[y], receiver_email, message)
+                
+        print(f'{sent}/{count} cycles complete!')
+        time.sleep(2)
 
-    except:
-        for x in range(count):
-            sent = x + 1
-            with smtplib.SMTP_SSL(smtp_server, port, context=context) as server:
-                server.login(emails, passwords)
-                server.sendmail(emails, receiver_email, message)
-            print(f'{sent}/{count} cycles complete!')
-            
 except Exception as err:
     print(err)
 

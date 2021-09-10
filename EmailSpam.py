@@ -1,34 +1,43 @@
-import smtplib, ssl, time
+import smtplib, ssl, threading
+#https://freecarrierlookup.com lets you format phone numbers as emails... spamming texts this way may be delayed
 
-print('\nTo use this to spam texts go here and format the persons number as an email (only works for top cellular carriers)\nhttps://freecarrierlookup.com/\n\nIt is also recommended that you use an alt gmail\n')
+#Edit here to configure spam 
+class Settings:
+    target = "Example@gmail.com"
+    message = "Example"
+    amount = 15
 
-port = 465 
-smtp_server = 'smtp.gmail.com'
+#Don't touch anything below unless you know what you are doing
+class Loop(threading.Thread):
+    def __init__(self, email, password, target, message, count):
+        threading.Thread.__init__(self)
+        self.email = str(email)
+        self.password = str(password)
+        self.count = count
+        self.target = target
+        self.message = message
+        
+    def run(self):
+        port = 465
+        server = "smtp.gmail.com"
+        with smtplib.SMTP_SSL(server, port, context = ssl.create_default_context()) as server:
+            try:
+                server.login(self.email, self.password)
+                for i in range(self.count):
+                    server.sendmail(self.email, self.target, self.message)
+                    print(f"{self.email} sent {i + 1}/{self.count} emails!")
+                    
+            except Exception:
+                print(f"Error sending email from: {self.email}")
+        
+def init(target, message, amount):
+    file = open("Emails.txt")
+    content = file.readlines()
+    print(f"Using {len(content)} email account(s)")
+    for line in content:
+        info = line.split(":")
+        thread = Loop(info[0], info[1], target, message, amount)
+        thread.start()
 
-emails = input('Enter gmail accounts you wish to use as spammers seperated by spaces (one or more needed): ')
-passwords = input('Enter gmail passwords for accounts seperated by spaces: ')
-receiver_email = input('Enter the email you wish to spam: ')
-message = input('Enter the body message of the email: ')
-count = int(input('How many times would you like the process to repeat? (numbers only): '))
-
-context = ssl.create_default_context()
-
-try:
-    sep_mails = emails.split(' ')
-    sep_pass = passwords.split(' ')
-    print(f'\nUsing email(s): {sep_mails}')
-
-    for x in range(count):
-        sent = x + 1
-        for y in range(len(sep_mails)):
-            with smtplib.SMTP_SSL(smtp_server, port, context = context) as server:
-                server.login(sep_mails[y], sep_pass[y])
-                server.sendmail(sep_mails[y], receiver_email, message)
-                
-        print(f'{sent}/{count} cycles complete!')
-        time.sleep(2)
-
-except Exception as err:
-    print(err)
-
-input('\nPress enter to close the application!')
+if __name__ == "__main__":
+    init(Settings.target, Settings.message, Settings.amount)

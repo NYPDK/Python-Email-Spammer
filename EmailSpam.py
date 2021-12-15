@@ -1,11 +1,12 @@
 import smtplib, ssl, threading
 #https://freecarrierlookup.com lets you format phone numbers as emails... spamming texts this way may be delayed
 
-#Edit here to configure spam 
+#Edit here to configure spam (Yes, I know... Class for settings is braindead, but I am ultra lazy.)
 class Settings:
-    target = "Example@gmail.com"
-    message = "Example"
-    amount = 15
+    target = "tester395912@gmail.com"
+    message = "Pool noodle detected 13.7 meters NW!"
+    amount = 10 #Number of emails to send per attacker account
+    multiplier = 1 #Multiplies the threads
 
 #Don't touch anything below unless you know what you are doing
 class Loop(threading.Thread):
@@ -26,9 +27,10 @@ class Loop(threading.Thread):
                 for i in range(self.count):
                     server.sendmail(self.email, self.target, self.message)
                     print(f"{self.email} sent {i + 1}/{self.count} emails!")
-                    
-            except Exception:
-                print(f"Error sending email from: {self.email}")
+                print(f"{self.email} finished a thread!")
+                
+            except Exception as e:
+                print(f"Error sending email from: {self.email}\nError: {e}")
         
 def init(target, message, amount):
     file = open("Emails.txt")
@@ -40,4 +42,5 @@ def init(target, message, amount):
         thread.start()
 
 if __name__ == "__main__":
-    init(Settings.target, Settings.message, Settings.amount)
+    for i in range(Settings.multiplier):
+        init(Settings.target, Settings.message, Settings.amount)
